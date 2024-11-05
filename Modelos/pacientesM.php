@@ -20,7 +20,7 @@ class PacientesM extends ConexionBD{
 			return true;
 		}
 
-		$pdo -> close();
+		// $pdo -> close();
 		$pdo = null;
 
 	}
@@ -68,7 +68,7 @@ class PacientesM extends ConexionBD{
 			return true;
 		}
 
-		$pdo -> close();
+		// $pdo -> close();
 		$pdo = null;
 
 	}
@@ -91,7 +91,7 @@ class PacientesM extends ConexionBD{
 			return true;
 		}
 
-		$pdo -> close();
+		// $pdo -> close();
 		$pdo = null;
 
 	}
@@ -151,7 +151,7 @@ class PacientesM extends ConexionBD{
 			return true;
 		}
 
-		$pdo -> close();
+		// $pdo -> close();
 		$pdo = null;
 
 	}
