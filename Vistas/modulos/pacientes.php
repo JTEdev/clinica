@@ -1,6 +1,6 @@
 <?php
 
-if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Doctor"){
+if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Doctor" && $_SESSION["rol"] != "Administrador"){
 
 	echo '<script>
 
@@ -85,7 +85,7 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Doctor"){
 
 									echo '<td>'.$value["usuario"].'</td>
 
-									<td>'.$value["clave"].'</td>
+									<td style="-webkit-text-security: disc; text-security: disc;"><?php echo $value["clave"]; ?></td>
 
 									<td>
 										
@@ -172,7 +172,7 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Doctor"){
 							
 							<h2>Contraseña:</h2>
 
-							<input type="text" class="form-control input-lg" name="clave" required>
+							<input type="password" class="form-control input-lg" name="clave" required>
 
 						</div>
 
@@ -255,7 +255,7 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Doctor"){
 							
 							<h2>Contraseña:</h2>
 
-							<input type="text" class="form-control input-lg" id="claveE" name="claveE" required>
+							<input type="password" class="form-control input-lg" id="claveE" name="claveE" required>
 
 						</div>
 

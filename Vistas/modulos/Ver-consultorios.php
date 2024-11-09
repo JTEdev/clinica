@@ -2,65 +2,62 @@
 
 if($_SESSION["rol"] != "Paciente"){
 
-	echo '<script>
+    echo '<script>
+    window.location = "inicio";
+    </script>';
 
-	window.location = "inicio";
-	</script>';
-
-	return;
+    return;
 
 }
-
 
 ?>
 
 <div class="content-wrapper">
-	<section class="content-header">
-		<h1>Elija un consultorio</h1>
-	</section>
+    <section class="content-header">
+        <h1>Elija un consultorio</h1>
+    </section>
 
-	<section class="content">
+    <section class="content">
 
-		<div class="box">
+        <div class="box">
 
-			<div class="box-body">
+            <div class="box-body">
 
-				<?php
+                <?php
 
-				$columna = null;
-				$valor = null;
+                $columna = null;
+                $valor = null;
 
-				$resultado = ConsultoriosC::VerConsultoriosC($columna, $valor);
+                $resultado = ConsultoriosC::VerConsultoriosC($columna, $valor);
 
-				foreach ($resultado as $key => $value) {
-				echo'	<div class="col-lg-3 col-xs-6">
-                    		<!-- small box -->
-                    		 <div class="small-box bg-aqua">
-                      		  		 <div class="inner">
-                           		 		 <h3>'.$value["nombre"].'</h3>';
- 											$columna = "id_consultorio" ;
-											$valor = $value["id"] ;
+                foreach ($resultado as $key => $value) {
+                    echo '<div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-aqua">
+                                <div class="inner">
+                                    <h3>'.$value["nombre"].'</h3>';
+                                    $columna = "id_consultorio";
+                                    $valor = $value["id"];
 
-											$doctores = DoctoresC::VerDoctoresC($columna, $valor);
-											foreach ($doctores as $key => $value){	
+                                    $doctores = DoctoresC::VerDoctoresC($columna, $valor);
+                                    foreach ($doctores as $key => $value){    
 
-												echo '<a href="Doctor/'.$value["id"].'" style="color: black;"><p>'.$value["apellido"].' '.$value["nombre"].'</p></a>';
-											}
-                           				 
-                        	 		echo'</div>        
-                     		</div>
-                		</div>';
-				}
+                                        echo '<a href="Doctor/'.$value["id"].'" style="color: black;">
+                                                <p style="font-size: 25px;">'.$value["apellido"].' '.$value["nombre"].'</p>
+                                              </a>';
+                                    }
 
-				?>
+                            echo '</div>        
+                            </div>
+                        </div>';
+                }
 
+                ?>
 
-			</div>
-			
-		</div>
-		
+            </div>
+            
+        </div>
+        
 
-	</section>
+    </section>
 </div>
-
-

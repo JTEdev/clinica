@@ -221,7 +221,7 @@ class DoctoresC
 							<input type="text" class="input-lg" name="usuarioPerfil" value="' . $resultado["usuario"] . '">
 
 							<h2>ContraseÃ±a:</h2>
-							<input type="text" class="input-lg" name="clavePerfil" value="' . $resultado["clave"] . '">';
+							<input type="password" class="input-lg" name="clavePerfil" value="' . $resultado["clave"] . '">';
 
 
 		$columna = "id";

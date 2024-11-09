@@ -1,6 +1,6 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
+    <section class="sidebar" style="font-size: 22px;">
     
       <ul class="sidebar-menu">
         

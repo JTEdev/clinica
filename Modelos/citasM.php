@@ -24,7 +24,7 @@ class CitasM extends ConexionBD
             return true;
         }
 
-        // $pdo->close();
+        //$pdo -> close();
         $pdo = null;
     }
 
@@ -60,9 +60,9 @@ class CitasM extends ConexionBD
 
         if ($pdo->execute()) {
             return true;
-        }
+        }   
 
-       
+        // $pdo->close();
         $pdo = null;
     }
 }

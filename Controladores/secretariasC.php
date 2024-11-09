@@ -1,24 +1,23 @@
 <?php
 
-class SecretariasC{
+class SecretariasC
+{
 
+	//Ingreso Secretarias
+	public function IngresarSecretariaC()
+	{
 
-	//ingreso secretarias
-	public function IngresarSecretariaC(){
+		if (isset($_POST["usuario-Ing"])) {
 
-		if(isset($_POST["usuario-Ing"])){
-
-			if(preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])){
+			if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
 
 				$tablaBD = "secretarias";
 
-				$datosC = array("usuario"=>$_POST["usuario-Ing"], "clave"=>$_POST["clave-Ing"]);
+				$datosC = array("usuario" => $_POST["usuario-Ing"], "clave" => $_POST["clave-Ing"]);
 
 				$resultado = SecretariasM::IngresarSecretariaM($tablaBD, $datosC);
 
-
-				//luis: agregue: is_array($resultado) && en la sgte linea, no esta en el video pero elimina un mensaje de la consola por login fallido
-				if(is_array($resultado) && $resultado["usuario"] == $_POST["usuario-Ing"] && $resultado["clave"] == $_POST["clave-Ing"]){
+				if ($resultado["usuario"] == $_POST["usuario-Ing"] && $resultado["clave"] == $_POST["clave-Ing"]) {
 
 					$_SESSION["Ingresar"] = true;
 
@@ -34,23 +33,19 @@ class SecretariasC{
 
 					window.location = "inicio";
 					</script>';
-				}else{
+				} else {
 
 					echo '<div class="alert alert-danger">Error al Ingresar</div>';
-
 				}
-
 			}
-
 		}
-
 	}
 
 
 
-
-	//ver perfil secretaria
-	public function VerPerfilSecretariaC(){
+	//Ver perfil secretaria
+	public function VerPerfilSecretariaC()
+	{
 
 		$tablaBD = "secretarias";
 
@@ -60,35 +55,44 @@ class SecretariasC{
 
 		echo '<tr>
 							
-			<td>'.$resultado["usuario"].'</td>
-			<td>'.$resultado["clave"].'</td>
-			<td>'.$resultado["nombre"].'</td>
-			<td>'.$resultado["apellido"].'</td>';
+				<td>' . $resultado["usuario"] . '</td>
 
-			if($resultado["foto"] != ""){
+				<td>' . $resultado["clave"] . '</td>
 
-				echo '<td><img src="http://localhost/clinica/'.$resultado["foto"].'" class="img-responsive" width="40px"></td>';
-			}else{
-				echo '<td><img src="http://localhost/clinica/Vistas/img/defecto.png" class="img-responsive" width="40px"></td>';
-			}
-			
+				<td>' . $resultado["nombre"] . '</td>
 
-			echo '<td>
-								
-				<a href="http://localhost/clinica/perfil-S/'.$resultado["id"].'">
-									
-					<button class="btn btn-success"><i class="fa fa-pencil"></i></button>
-				</a>
-			</td>
-		</tr>';
+				<td>' . $resultado["apellido"] . '</td>';
+
+		if ($resultado["foto"] != "") {
+
+			echo '<td><img src="http://localhost/clinica/' . $resultado["foto"] . '" class="img-responsive" width="40px"></td>';
+		} else {
+
+			echo '<td><img src="http://localhost/clinica/Vistas/img/defecto.png" class="img-responsive" width="40px"></td>';
+		}
+
+
+
+		echo '<td>
+						
+					<a href="http://localhost/clinica/perfil-S/' . $resultado["id"] . '">
+						
+						<button class="btn btn-success"><i class="fa fa-pencil"></i></button>
+
+					</a>
+
+				</td>
+
+			</tr>';
 	}
 
 
 
 
 
-	//editar perfil
-	public function EditarPerfilSecretariaC(){
+	//Editar Perfil
+	public function EditarPerfilSecretariaC()
+	{
 
 		$tablaBD = "secretarias";
 
@@ -98,119 +102,174 @@ class SecretariasC{
 
 		echo '<form method="post" enctype="multipart/form-data">
 					
-					<div class="row">
+				<div class="row">
+					
+					<div class="col-md-6 col-xs-12">
 						
-						<div class="col-md-6 col-xs-12">
-							
-							<h2>Nombre:</h2>
-							<input type="text" class="input-lg" name="nombreP" value="'.$resultado["nombre"].'">
-							<input type="hidden" class="input-lg" name="idP" value="'.$resultado["id"].'">
+						<h2>Nombre:</h2>
+						<input type="text" class="input-lg" name="nombreP" value="' . $resultado["nombre"] . '">
+						<input type="hidden" class="input-lg" name="idP" value="' . $resultado["id"] . '">
 
-							<h2>Apellido:</h2>
-							<input type="text" class="input-lg" name="apellidoP" value="'.$resultado["apellido"].'">
+						<h2>Apellido:</h2>
+						<input type="text" class="input-lg" name="apellidoP" value="' . $resultado["apellido"] . '">
 
-							<h2>Usuario:</h2>
-							<input type="text" class="input-lg" name="usuarioP" value="'.$resultado["usuario"].'">
+						<h2>Usuario:</h2>
+						<input type="text" class="input-lg" name="usuarioP" value="' . $resultado["usuario"] . '">
 
-							<h2>Contraseña:</h2>
-							<input type="text" class="input-lg" name="claveP" value="'.$resultado["clave"].'">
-						</div>
-
-						<div class="col-md-6 col-xs-12">
-							
-							<br><br>
-
-							<input type="file" name="imgP">
-							<br>';
-
-							if($resultado["foto"] == ""){
-
-								echo '<img src="http://localhost/clinica/Vistas/img/defecto.png" width="200px;">';								
-							}else{
-
-								echo '<img src="http://localhost/clinica/'.$resultado["foto"].'" width="200px;">';
-
-							}
-
-							
-
-							echo '<input type="hidden" name="imgActual" value="'.$resultado["foto"].'">
-							<br><br>
-
-							<button type="submit" class="btn btn-success">Guardar Cambios</button>
-
-						</div>
+						<h2>Contraseña:</h2>
+						<input type="password" class="input-lg" name="claveP" value="' . $resultado["clave"] . '">
 
 					</div>
 
-				</form>';
+					<div class="col-md-6 col-xs-12">
+						
+						<br><br>
 
+						<input type="file" name="imgP">
+						<br>';
+
+		if ($resultado["foto"] == "") {
+
+			echo '<img src="http://localhost/clinica/Vistas/img/defecto.png" width="200px;">';
+		} else {
+
+			echo '<img src="http://localhost/clinica/' . $resultado["foto"] . '" width="200px;">';
+		}
+
+
+
+		echo '<input type="hidden" name="imgActual" value="' . $resultado["foto"] . '">
+
+						<br><br>
+
+						<button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+					</div>
+
+				</div>
+
+			</form>';
 	}
 
-	//Actualizar Perfil Secretaria
-	public function ActualizarPerfilSecretariaC(){
 
-		if(isset($_POST["idP"])){
+
+	//Actualizar Perfil Secretaria
+	public function ActualizarPerfilSecretariaC()
+	{
+
+		if (isset($_POST["idP"])) {
 
 			$rutaImg = $_POST["imgActual"];
 
-			if(isset($_FILES["imgP"]["tmp_name"]) && !empty($_FILES["imgP"]["tmp_name"])){
+			if (isset($_FILES["imgP"]["tmp_name"]) && !empty($_FILES["imgP"]["tmp_name"])) {
 
-				if(!empty($_POST["imgActual"])){
+				if (!empty($_POST["imgActual"])) {
 
 					unlink($_POST["imgActual"]);
-
-
-
 				}
 
 
-				if($_FILES["imgP"]["type"] == "image/jpeg"){
+				if ($_FILES["imgP"]["type"] == "image/jpeg") {
 
-					$nombre = mt_rand(10,99);
+					$nombre = mt_rand(10, 99);
 
-					$rutaImg = "Vistas/img/Secretarias/S-".$nombre.".jpg";
-
+					$rutaImg = "Vistas/img/Secretarias/S-" . $nombre . ".jpg";
 
 					$foto = imagecreatefromjpeg($_FILES["imgP"]["tmp_name"]);
 
-
 					imagejpeg($foto, $rutaImg);
-
 				}
 
-				if($_FILES["imgP"]["type"] == "image/png"){
+				if ($_FILES["imgP"]["type"] == "image/png") {
 
-					$nombre = mt_rand(10,99);
+					$nombre = mt_rand(10, 99);
 
-					$rutaImg = "Vistas/img/Secretarias/S-".$nombre.".png";
-
+					$rutaImg = "Vistas/img/Secretarias/S-" . $nombre . ".png";
 
 					$foto = imagecreatefrompng($_FILES["imgP"]["tmp_name"]);
 
-
 					imagepng($foto, $rutaImg);
-
-
 				}
 			}
 
+
 			$tablaBD = "secretarias";
 
-			$datosC = array("id"=>$_POST["idP"], "usuario"=>$_POST["usuarioP"], "apellido"=>$_POST["apellidoP"], "nombre"=>$_POST["nombreP"], "clave"=>$_POST["claveP"], "foto"=>$rutaImg);
+			$datosC = array("id" => $_POST["idP"], "usuario" => $_POST["usuarioP"], "apellido" => $_POST["apellidoP"], "nombre" => $_POST["nombreP"], "clave" => $_POST["claveP"], "foto" => $rutaImg);
 
 			$resultado = SecretariasM::ActualizarPerfilSecretariaM($tablaBD, $datosC);
 
-
-			if($resultado == true){
+			if ($resultado == true) {
 
 				echo '<script>
 
-
-				window.location = "http://localhost/clinica/perfil-S/'.$_SESSION["id"].'";
+				window.location = "http://localhost/clinica/perfil-S/' . $_SESSION["id"] . '";
 				</script>';
 			}
+		}
+	}
 
+
+	//Mostrar Secretarias
+	public static function VerSecretariasC()
+	{
+
+		$tablaBD = "secretarias";
+
+		$resultado = SecretariasM::VerSecretariasM($tablaBD);
+
+		return $resultado;
+	}
+
+
+	//Crear Secretarias
+	public function CrearSecretariaC()
+	{
+
+		if (isset($_POST["rolS"])) {
+
+			$tablaBD = "secretarias";
+
+			$datosC = array("nombre" => $_POST["nombre"], "apellido" => $_POST["apellido"], "usuario" => $_POST["usuario"], "clave" => $_POST["clave"], "rol" => $_POST["rolS"]);
+
+			$resultado = SecretariasM::CrearSecretariaM($tablaBD, $datosC);
+
+			if ($resultado == true) {
+
+				echo '<script>
+
+				window.location = "secretarias";
+				</script>';
+			}
+		}
+	}
+
+
+
+	//Borrar Secretarias
+	public function BorrarSecretariaC()
+	{
+
+		if (isset($_GET["Sid"])) {
+
+			$tablaBD = "secretarias";
+
+			$id = $_GET["Sid"];
+
+			if ($_GET["imgS"] != "") {
+
+				unlink($_GET["imgS"]);
+			}
+
+			$resultado = SecretariasM::BorrarSecretariaM($tablaBD, $id);
+
+			if ($resultado == true) {
+
+				echo '<script>
+
+				window.location = "secretarias";
+				</script>';
+			}
 		}
 	}
 }

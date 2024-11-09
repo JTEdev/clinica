@@ -21,7 +21,7 @@ if ($_SESSION["id"] != substr($_GET["url"], 10)) {
 
 	</section>
 
-	<section class="content">
+	<section class="content" style="font-size: 18px;">
 
 		<div class="box">
 

@@ -210,7 +210,7 @@ class PacientesC{
 							<input type="text" class="input-lg" name="usuarioPerfil" value="'.$resultado["usuario"].'">
 
 							<h2>Clave:</h2>
-							<input type="text" class="input-lg" name="clavePerfil" value="'.$resultado["clave"].'">
+							<input type="password" class="input-lg" name="clavePerfil" value="'.$resultado["clave"].'">
 
 							<h2>Documento:</h2>
 							<input type="text" class="input-lg" name="documentoPerfil" value="'.$resultado["documento"].'">
