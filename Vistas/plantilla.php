@@ -11,6 +11,11 @@ session_start();
   <title>Clinica Medica</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  
+  <?php
+  $favicon = new InicioC();
+  $favicon -> FaviconC();
+  ?>
 
   <!-- Stylesheets -->
   <!-- Bootstrap 3.3.7 -->
@@ -24,7 +29,7 @@ session_start();
   <!-- AdminLTE Skins -->
   <link rel="stylesheet" href="http://localhost/clinica/Vistas/dist/css/skins/_all-skins.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/css/dataTables.bootstrap.css">
+  <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/css/responsive.bootstrap.min.css">
   <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -55,6 +60,8 @@ session_start();
       include "modulos/menuPaciente.php";
     } elseif ($_SESSION["rol"] == "Doctor") {
       include "modulos/menuDoctor.php";
+    } elseif ($_SESSION["rol"] == "Administrador") {
+      include "modulos/menuAdmin.php";
     }
 
     $url = array();
@@ -66,7 +73,7 @@ session_start();
         $url[0] == "inicio" || $url[0] == "salir" || $url[0] == "perfil-Secretaria" || $url[0] == "perfil-S" || $url[0] == "consultorios"
         || $url[0] == "E-C" || $url[0] == "doctores" || $url[0] == "pacientes" || $url[0] == "perfil-Paciente" || $url[0] == "perfil-P"
         || $url[0] == "Ver-consultorios" || $url[0] == "Doctor" || $url[0] == "historial" || $url[0] == "perfil-Doctor" || $url[0] == "perfil-D"
-        || $url[0] == "Citas"
+        || $url[0] == "Citas" || $url[0] == "perfil-Administrador" || $url[0] == "perfil-A" || $url[0] == "secretarias" || $url[0] == "inicio-editar" 
       ) {
 
         include "modulos/" . $url[0] . ".php";
@@ -85,7 +92,11 @@ session_start();
       include "modulos/ingreso-Paciente.php";
     } else if ($_GET["url"] == "ingreso-Doctor") {
       include "modulos/ingreso-Doctor.php";
+    } else if ($_GET["url"] == "ingreso-Administrador") {
+      include "modulos/ingreso-Administrador.php";
     }
+
+
   } else {
     include "modulos/seleccionar.php";
   }
@@ -106,7 +117,9 @@ session_start();
   <script src="http://localhost/clinica/Vistas/dist/js/demo.js"></script>
   <!-- DataTables -->
   <script src="http://localhost/clinica/Vistas/bower_components/datatables.net/js/jquery.dataTables.js"></script>
-  <script src="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/js/dataTables.bootstrap.js"></script>
+  <script src="http://localhost/clinica/Vistas/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/js/dataTables.responsive.min.js"></script>
+  <script src="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
   <!-- fullCalendar -->
   <script src="http://localhost/clinica/Vistas/bower_components/moment/moment.js"></script>
   <script src="http://localhost/clinica/Vistas/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
@@ -114,11 +127,12 @@ session_start();
   <!-- Custom Scripts -->
   <script src="http://localhost/clinica/Vistas/js/doctores.js"></script>
   <script src="http://localhost/clinica/Vistas/js/pacientes.js"></script>
+  <script src="http://localhost/clinica/Vistas/js/secretarias.js"></script>
 
   <script>
     $(document).ready(function() {
       $('.sidebar-menu').tree();
-    });
+    });    
 
     var date = new Date();
     var d = date.getDate(),
@@ -135,48 +149,50 @@ session_start();
         foreach ($resultado as $key => $value) {
           if ($value["id_doctor"] == substr($_GET["url"], 7)) {
             echo '{
-              "id": "' . $value["id"] . '",
-              "title": "' . $value["nyaP"] . '",
-              "start": "' . $value["inicio"] . '",
-              "end": "' . $value["fin"] . '"
-            },';
+            id: "' . $value["id"] . '",
+            title: "' . $value["nyaP"] . '",
+            start: "' . $value["inicio"] . '",
+            end: "' . $value["fin"] . '"
+        },';
           } else if ($value["id_doctor"] == substr($_GET["url"], 6)) {
             echo '{
-              "id": "' . $value["id"] . '",
-              "title": "' . $value["nyaP"] . '",
-              "start": "' . $value["inicio"] . '",
-              "end": "' . $value["fin"] . '"
-            },';
+            id: "' . $value["id"] . '",
+            title: "' . $value["nyaP"] . '",
+            start: "' . $value["inicio"] . '",
+            end: "' . $value["fin"] . '"
+        },';
           }
         }
+
         ?>
       ],
 
-      // 
-      // if ($_SESSION["rol"] == "Paciente") {
+      <?php
+      if ($_SESSION["rol"] == "Paciente") {
+        $columna = "id";
+        $valor = substr($_GET["url"], 7);
 
-      //   $columna = "id";
-      //   $valor = substr($_GET["url"], 7);
+        $resultado = DoctoresC::DoctorC($columna, $valor);
 
-      //   $resultado = DoctoresC::DoctorC($columna, $valor);
+        echo 'scrollTime: "' . $resultado["horarioE"] . '",
+                          minTime: "' . $resultado["horarioE"] . '",
+                          maxTime: "' . $resultado["horarioS"] . '",';
+      } else if ($_SESSION["rol"] == "Doctor") {
+        $columna = "id";
+        $valor = substr($_GET["url"], 6);
 
-      //   echo 'scrollTime: "' . $resultado["horarioE"] . '",
-      //     minTime: "' . $resultado["horarioE"] . '",
-      //     maxTime: "' . $resultado["horarioS"] . '",';
-      // } else if ($_SESSION["rol"] == "Doctor") {
+        $resultado = DoctoresC::DoctorC($columna, $valor);
 
-      //   $columna = "id";
-      //   $valor = substr($_GET["url"], 6);
+        echo 'scrollTime: "' . $resultado["horarioE"] . '",
+                          minTime: "' . $resultado["horarioE"] . '",
+                          maxTime: "' . $resultado["horarioS"] . '",';  
+      }
 
-      //   $resultado = DoctoresC::DoctorC($columna, $valor);
 
-      //   echo 'scrollTime: "' . $resultado["horarioE"] . '",
-      //     minTime: "' . $resultado["horarioE"] . '",
-      //     maxTime: "' . $resultado["horarioS"] . '",';
-      // }
-      // 
+      ?>
 
-      dayClick:function(date, jsEvent, view) {
+
+      dayClick: function(date, jsEvent, view) {
         $('#CitaModal').modal();
         var fecha = date.format();
         var hora2 = ("1:00:00").split(":");
@@ -191,7 +207,7 @@ session_start();
         $('#fechaC').val(dia);
         $('#horaC').val(h1 + ":00:00");
         $('#fyhIC').val(fecha[0] + " " + h1 + ":00:00");
-        $('#fyhIC').val(fecha[0] + " " + horaFinal + ":00:00");
+        $('#fyhFC').val(fecha[0] + " " + horaFinal + ":00:00");
       }
     });
   </script>

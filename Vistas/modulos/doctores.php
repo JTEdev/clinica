@@ -296,6 +296,8 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Administrador"){
 
 						</div>
 
+
+
 						<div class="form-group">
 							
 							<h2>Usuario:</h2>
