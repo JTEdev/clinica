@@ -91,7 +91,9 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Administrador"){
 
 									<td>'.$value["usuario"].'</td>
 
-									<td>'.$value["clave"].'</td>
+									
+									<td style="-webkit-text-security: disc; text-security: disc;"><?php echo $value["clave"]; ?></td>
+
 
 									<td>
 										
@@ -217,7 +219,7 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Administrador"){
 							
 							<h2>Contraseña:</h2>
 
-							<input type="text" class="form-control input-lg" name="clave" required>
+							<input type="password" class="form-control input-lg" name="clave" required>
 
 						</div>
 
@@ -310,7 +312,7 @@ if($_SESSION["rol"] != "Secretaria" && $_SESSION["rol"] != "Administrador"){
 							
 							<h2>Contraseña:</h2>
 
-							<input type="text" class="form-control input-lg" id="claveE" name="claveE" required>
+							<input type="password" class="form-control input-lg" id="claveE" name="claveE" required>
 
 						</div>
 

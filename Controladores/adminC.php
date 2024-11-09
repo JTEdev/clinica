@@ -106,7 +106,7 @@ class AdminC
 						<input type="text" class="input-lg" name="usuarioP" value="' . $resultado["usuario"] . '">
 
 						<h2>Contraseña:</h2>
-						<input type="text" class="input-lg" name="claveP" value="' . $resultado["clave"] . '">
+						<input type="password" class="input-lg" name="claveP" value="' . $resultado["clave"] . '">
 
 					</div>
 
