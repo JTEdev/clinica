@@ -117,6 +117,8 @@ class DoctoresC
 
 				$resultado = DoctoresM::IngresarDoctorM($tablaBD, $datosC);
 
+				
+
 				if ($resultado["usuario"] == $_POST["usuario-Ing"] && $resultado["clave"] == $_POST["clave-Ing"]) {
 
 
@@ -135,7 +137,12 @@ class DoctoresC
 
 					window.location = "inicio";
 					</script>';
+				}else {
+					echo '<div class="alert alert-danger">Error al Ingresar</div>';
 				}
+			}else {
+				// Mensaje de error si no se encontraron coincidencias
+				echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
 			}
 		}
 	}

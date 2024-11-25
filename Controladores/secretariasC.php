@@ -5,22 +5,22 @@ class SecretariasC
 
 	//Ingreso Secretarias
 	public function IngresarSecretariaC()
-	{
+{
+	if (isset($_POST["usuario-Ing"])) {
 
-		if (isset($_POST["usuario-Ing"])) {
+		if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
 
-			if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
+			$tablaBD = "secretarias";
+			$datosC = array("usuario" => $_POST["usuario-Ing"], "clave" => $_POST["clave-Ing"]);
 
-				$tablaBD = "secretarias";
+			$resultado = SecretariasM::IngresarSecretariaM($tablaBD, $datosC);
 
-				$datosC = array("usuario" => $_POST["usuario-Ing"], "clave" => $_POST["clave-Ing"]);
-
-				$resultado = SecretariasM::IngresarSecretariaM($tablaBD, $datosC);
+			// Verificar si el resultado es un array válido antes de acceder a sus índices
+			if ($resultado && is_array($resultado)) {
 
 				if ($resultado["usuario"] == $_POST["usuario-Ing"] && $resultado["clave"] == $_POST["clave-Ing"]) {
 
 					$_SESSION["Ingresar"] = true;
-
 					$_SESSION["id"] = $resultado["id"];
 					$_SESSION["usuario"] = $resultado["usuario"];
 					$_SESSION["clave"] = $resultado["clave"];
@@ -29,17 +29,18 @@ class SecretariasC
 					$_SESSION["foto"] = $resultado["foto"];
 					$_SESSION["rol"] = $resultado["rol"];
 
-					echo '<script>
-
-					window.location = "inicio";
-					</script>';
+					echo '<script> window.location = "inicio"; </script>';
 				} else {
-
 					echo '<div class="alert alert-danger">Error al Ingresar</div>';
 				}
+
+			} else {
+				// Mensaje de error si no se encontraron coincidencias
+				echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
 			}
 		}
 	}
+}
 
 
 
