@@ -8,6 +8,8 @@ class DoctoresM extends ConexionBD
 	//Crear Doctores
 	static public function CrearDoctorM($tablaBD, $datosC)
 	{
+		// Encriptar la clave usando password_hash
+		$clave_encriptada = password_hash($datosC["clave"], PASSWORD_BCRYPT);
 
 		$pdo = ConexionBD::cBD()->prepare("INSERT INTO $tablaBD(apellido, nombre, sexo, id_consultorio, usuario, clave, rol) VALUES(:apellido, :nombre, :sexo, :id_consultorio, :usuario, :clave, :rol)");
 
@@ -16,7 +18,9 @@ class DoctoresM extends ConexionBD
 		$pdo->bindParam(":sexo", $datosC["sexo"], PDO::PARAM_STR);
 		$pdo->bindParam(":id_consultorio", $datosC["id_consultorio"], PDO::PARAM_INT);
 		$pdo->bindParam(":usuario", $datosC["usuario"], PDO::PARAM_STR);
-		$pdo->bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
+		$pdo->bindParam(":clave", $clave_encriptada, PDO::PARAM_STR);
+
+		//$pdo->bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
 		$pdo->bindParam(":rol", $datosC["rol"], PDO::PARAM_STR);
 
 		if ($pdo->execute()) {
@@ -131,8 +135,8 @@ class DoctoresM extends ConexionBD
 
 		return $pdo->fetch();
 
-		$pdo->close();
-		$pdo = null;
+		//$pdo->close();
+		//$pdo = null;
 	}
 
 

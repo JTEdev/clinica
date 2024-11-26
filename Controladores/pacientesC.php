@@ -99,7 +99,44 @@ class PacientesC{
 
 
 	//Ingreso de los Pacientes
-	public function IngresarPacienteC(){
+	public function IngresarPacienteC() {
+		if (isset($_POST["usuario-Ing"])) {
+			// Validar inputs con expresiones regulares
+			if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
+	
+				$tablaBD = "pacientes";
+				$datosC = array("usuario" => $_POST["usuario-Ing"]);
+	
+				// Buscar el usuario en la base de datos
+				$resultado = PacientesM::IngresarPacienteM($tablaBD, $datosC);
+	
+				// Verificar si se encontró un usuario y si la contraseña es correcta
+				if ($resultado && password_verify($_POST["clave-Ing"], $resultado["clave"])) {
+					// Iniciar sesión
+					session_start();
+					$_SESSION["Ingresar"] = true;
+	
+					$_SESSION["id"] = $resultado["id"];
+					$_SESSION["usuario"] = $resultado["usuario"];
+					$_SESSION["apellido"] = $resultado["apellido"];
+					$_SESSION["nombre"] = $resultado["nombre"];
+					$_SESSION["documento"] = $resultado["documento"];
+					$_SESSION["foto"] = $resultado["foto"];
+					$_SESSION["rol"] = $resultado["rol"];
+	
+					// Redirigir al inicio
+					echo '<script>
+						window.location = "inicio";
+					</script>';
+				} else {
+					// Si el usuario o la contraseña son incorrectos
+					echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
+				}
+			}
+		}
+	}
+	
+	/*public function IngresarPacienteC(){
 
 		if(isset($_POST["usuario-Ing"])){
 
@@ -136,7 +173,7 @@ class PacientesC{
 
 		}
 
-	}
+	}*/
 
 
 

@@ -104,7 +104,7 @@ class DoctoresC
 
 
 	//Iniciar sesiÃ³n doctor
-	public function IngresarDoctorC()
+	/*public function IngresarDoctorC()
 	{
 
 		if (isset($_POST["usuario-Ing"])) {
@@ -145,7 +145,45 @@ class DoctoresC
 				echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
 			}
 		}
-	}
+	}*/
+	public function IngresarDoctorC()
+{
+    if (isset($_POST["usuario-Ing"])) {
+        // Validar que los campos tengan el formato correcto
+        if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
+
+            $tablaBD = "doctores";
+            $datosC = array("usuario" => $_POST["usuario-Ing"]);
+
+            // Consultar la base de datos
+            $resultado = DoctoresM::IngresarDoctorM($tablaBD, $datosC);
+
+            // Verificar si el usuario fue encontrado y validar la contraseña con password_verify
+            if ($resultado && password_verify($_POST["clave-Ing"], $resultado["clave"])) {
+                // Iniciar sesión
+                session_start();
+                $_SESSION["Ingresar"] = true;
+                $_SESSION["id"] = $resultado["id"];
+                $_SESSION["usuario"] = $resultado["usuario"];
+                $_SESSION["apellido"] = $resultado["apellido"];
+                $_SESSION["nombre"] = $resultado["nombre"];
+                $_SESSION["sexo"] = $resultado["sexo"];
+                $_SESSION["foto"] = $resultado["foto"];
+                $_SESSION["rol"] = $resultado["rol"];
+
+                // Redirigir al inicio
+                echo '<script> window.location = "inicio"; </script>';
+            } else {
+                // Error de usuario o contraseña
+                echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
+            }
+        } else {
+            // Formato inválido en los inputs
+            echo '<div class="alert alert-danger">Formato inválido en usuario o contraseña</div>';
+        }
+    }
+}
+
 
 
 	//Ver Perfil Doctor

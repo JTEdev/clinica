@@ -4,7 +4,7 @@ class SecretariasC
 {
 
 	//Ingreso Secretarias
-	public function IngresarSecretariaC()
+	/*public function IngresarSecretariaC()
 {
 	if (isset($_POST["usuario-Ing"])) {
 
@@ -19,6 +19,7 @@ class SecretariasC
 			if ($resultado && is_array($resultado)) {
 
 				if ($resultado["usuario"] == $_POST["usuario-Ing"] && $resultado["clave"] == $_POST["clave-Ing"]) {
+				
 
 					$_SESSION["Ingresar"] = true;
 					$_SESSION["id"] = $resultado["id"];
@@ -40,7 +41,44 @@ class SecretariasC
 			}
 		}
 	}
+}*/
+// Ingreso Secretarias
+public function IngresarSecretariaC() {
+    if (isset($_POST["usuario-Ing"])) {
+        // Validar que los campos tengan el formato correcto
+        if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario-Ing"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["clave-Ing"])) {
+
+            $tablaBD = "secretarias";
+            $datosC = array("usuario" => $_POST["usuario-Ing"]);
+
+            // Consultar la base de datos
+            $resultado = SecretariasM::IngresarSecretariaM($tablaBD, $datosC);
+
+            // Verificar si el usuario fue encontrado y validar la contraseña con password_verify
+            if ($resultado && password_verify($_POST["clave-Ing"], $resultado["clave"])) {
+                // Iniciar sesión
+                session_start();
+                $_SESSION["Ingresar"] = true;
+                $_SESSION["id"] = $resultado["id"];
+                $_SESSION["usuario"] = $resultado["usuario"];
+                $_SESSION["nombre"] = $resultado["nombre"];
+                $_SESSION["apellido"] = $resultado["apellido"];
+                $_SESSION["foto"] = $resultado["foto"];
+                $_SESSION["rol"] = $resultado["rol"];
+
+                // Redirigir al inicio
+                echo '<script> window.location = "inicio"; </script>';
+            } else {
+                // Error de usuario o contraseña
+                echo '<div class="alert alert-danger">Usuario o contraseña incorrectos</div>';
+            }
+        } else {
+            // Formato inválido en los inputs
+            echo '<div class="alert alert-danger">Formato inválido en usuario o contraseña</div>';
+        }
+    }
 }
+
 
 
 

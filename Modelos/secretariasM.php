@@ -18,8 +18,8 @@ class SecretariasM extends ConexionBD
 
 		return $pdo->fetch();
 
-		$pdo->close();
-		$pdo = null;
+		//$pdo->close();
+		//$pdo = null;
 	}
 
 
@@ -88,13 +88,16 @@ class SecretariasM extends ConexionBD
 	//Crear Secretarias
 	static public function CrearSecretariaM($tablaBD, $datosC)
 	{
+		// Encriptar la clave usando password_hash
+		$clave_encriptada = password_hash($datosC["clave"], PASSWORD_BCRYPT);
 
 		$pdo = ConexionBD::cBD()->prepare("INSERT INTO $tablaBD (nombre, apellido, usuario, clave, rol) VALUES (:nombre, :apellido, :usuario, :clave, :rol)");
 
 		$pdo->bindParam(":nombre", $datosC["nombre"], PDO::PARAM_STR);
 		$pdo->bindParam(":apellido", $datosC["apellido"], PDO::PARAM_STR);
 		$pdo->bindParam(":usuario", $datosC["usuario"], PDO::PARAM_STR);
-		$pdo->bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
+		$pdo->bindParam(":clave", $clave_encriptada, PDO::PARAM_STR);
+		//$pdo->bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
 		$pdo->bindParam(":rol", $datosC["rol"], PDO::PARAM_STR);
 
 		if ($pdo->execute()) {

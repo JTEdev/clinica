@@ -6,6 +6,8 @@ class PacientesM extends ConexionBD{
 
 	//Crear Pacientes
 	static public function CrearPacienteM($tablaBD, $datosC){
+		// Encriptar la clave usando password_hash
+		$clave_encriptada = password_hash($datosC["clave"], PASSWORD_BCRYPT);
 
 		$pdo = ConexionBD::cBD()->prepare("INSERT INTO $tablaBD(apellido, nombre, documento, usuario, clave, rol) VALUES (:apellido, :nombre, :documento, :usuario, :clave, :rol)");
 
@@ -13,17 +15,45 @@ class PacientesM extends ConexionBD{
 		$pdo -> bindParam(":nombre", $datosC["nombre"], PDO::PARAM_STR);
 		$pdo -> bindParam(":documento", $datosC["documento"], PDO::PARAM_STR);
 		$pdo -> bindParam(":usuario", $datosC["usuario"], PDO::PARAM_STR);
-		$pdo -> bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
+		$pdo->bindParam(":clave", $clave_encriptada, PDO::PARAM_STR);
+
+	//	$pdo -> bindParam(":clave", $datosC["clave"], PDO::PARAM_STR);
 		$pdo -> bindParam(":rol", $datosC["rol"], PDO::PARAM_STR);
 
 		if($pdo -> execute()){
 			return true;
 		}
 
-		// $pdo -> close();
+		// $pdo -> close();			
 		$pdo = null;
 
 	}
+	/*class PacientesM extends ConexionBD {
+
+		// Crear Pacientes
+		static public function CrearPacienteM($tablaBD, $datosC) {
+			// Encriptar la clave usando password_hash
+			$clave_encriptada = password_hash($datosC["clave"], PASSWORD_BCRYPT);
+	
+			$pdo = ConexionBD::cBD()->prepare("INSERT INTO $tablaBD(apellido, nombre, documento, usuario, clave, rol) VALUES (:apellido, :nombre, :documento, :usuario, :clave, :rol)");
+	
+			$pdo->bindParam(":apellido", $datosC["apellido"], PDO::PARAM_STR);
+			$pdo->bindParam(":nombre", $datosC["nombre"], PDO::PARAM_STR);
+			$pdo->bindParam(":documento", $datosC["documento"], PDO::PARAM_STR);
+			$pdo->bindParam(":usuario", $datosC["usuario"], PDO::PARAM_STR);
+			$pdo->bindParam(":clave", $clave_encriptada, PDO::PARAM_STR);
+			$pdo->bindParam(":rol", $datosC["rol"], PDO::PARAM_STR);
+	
+			if ($pdo->execute()) {
+				return true;
+			}
+	
+			// Liberar la conexión
+			$pdo = null;
+			//return false;
+		}
+	}*/
+
 
 
 
@@ -99,7 +129,7 @@ class PacientesM extends ConexionBD{
 
 
 	//Ingreso de los Pacientes
-	static public function IngresarPacienteM($tablaBD, $datosC){
+	/*static public function IngresarPacienteM($tablaBD, $datosC){
 
 		$pdo = ConexionBD::cBD()->prepare("SELECT usuario, clave, apellido, nombre, documento, foto, rol, id FROM $tablaBD WHERE usuario = :usuario");
 
@@ -111,9 +141,35 @@ class PacientesM extends ConexionBD{
 
 		$pdo -> close();
 		$pdo = null;
-
+		
+	
+		
+	}*/
+	static public function IngresarPacienteM($tablaBD, $datosC) {
+		$pdo = ConexionBD::cBD()->prepare("SELECT usuario, clave, apellido, nombre, documento, foto, rol, id FROM $tablaBD WHERE usuario = :usuario");
+		$pdo->bindParam(":usuario", $datosC["usuario"], PDO::PARAM_STR);
+		$pdo->execute();
+		return $pdo->fetch();
+		//$usuario = $pdo->fetch();
+		//$pdo = null;
+	
+		// Depuración
+		if (!$usuario) {
+			die("Usuario no encontrado en la base de datos.");
+		} else {
+			echo "Usuario encontrado: " . $usuario["usuario"] . "<br>";
+			echo "Hash almacenado: " . $usuario["clave"] . "<br>";
+			echo "Clave ingresada: " . $datosC["clave"] . "<br>";
+		}
+	
+		if (password_verify($datosC["clave"], $usuario["clave"])) {
+			echo "Contraseña correcta.";
+			return $usuario;
+		} else {
+			die("Contraseña incorrecta.");
+		}
 	}
-
+	
 
 
 	//Ver Perfil del Paciente
