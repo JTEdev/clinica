@@ -8,7 +8,7 @@ session_start();
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>C. Maria Auxiliadora</title>
+  <title>Clinica Medica</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
@@ -33,10 +33,7 @@ session_start();
   <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  <!-- FULLCALENDAR -->
-  <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/fullcalendar/dist/fullcalendar.min.css">
-  <link rel="stylesheet" href="http://localhost/clinica/Vistas/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
-
+ 
 
 
   <!-- HTML5 Shim and Respond.js for IE8 support -->
@@ -72,7 +69,7 @@ session_start();
       if (
         $url[0] == "inicio" || $url[0] == "salir" || $url[0] == "perfil-Secretaria" || $url[0] == "perfil-S" || $url[0] == "consultorios"
         || $url[0] == "E-C" || $url[0] == "doctores" || $url[0] == "pacientes" || $url[0] == "perfil-Paciente" || $url[0] == "perfil-P"
-        || $url[0] == "Ver-consultorios" || $url[0] == "Doctor" || $url[0] == "historial" || $url[0] == "perfil-Doctor" || $url[0] == "perfil-D"
+        || $url[0] == "Ver-consultorios" || $url[0] == "Doctor" || $url[0] == "historial"|| $url[0] == "editarCita" || $url[0] == "perfil-Doctor" || $url[0] == "perfil-D"
         || $url[0] == "Citas" || $url[0] == "perfil-Administrador" || $url[0] == "perfil-A" || $url[0] == "secretarias" || $url[0] == "inicio-editar" 
       ) {
 
@@ -93,7 +90,7 @@ session_start();
     } else if ($_GET["url"] == "ingreso-Doctor") {
       include "modulos/ingreso-Doctor.php";
     } else if ($_GET["url"] == "ingreso-Administrador") {
-      include "modulos/ingreso-Administrador.php";
+      include "modulos/ingreso-Administrador.php"; 
     }
 
 
@@ -120,97 +117,13 @@ session_start();
   <script src="http://localhost/clinica/Vistas/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/js/dataTables.responsive.min.js"></script>
   <script src="http://localhost/clinica/Vistas/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-  <!-- fullCalendar -->
-  <script src="http://localhost/clinica/Vistas/bower_components/moment/moment.js"></script>
-  <script src="http://localhost/clinica/Vistas/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-  <script src="http://localhost/clinica/Vistas/bower_components/fullcalendar/dist/locale/es.js"></script>
+ 
   <!-- Custom Scripts -->
   <script src="http://localhost/clinica/Vistas/js/doctores.js"></script>
   <script src="http://localhost/clinica/Vistas/js/pacientes.js"></script>
   <script src="http://localhost/clinica/Vistas/js/secretarias.js"></script>
 
-  <script>
-    $(document).ready(function() {
-      $('.sidebar-menu').tree();
-    });    
 
-    var date = new Date();
-    var d = date.getDate(),
-      m = date.getMonth(),
-      y = date.getFullYear();
-
-    $('#calendar').fullCalendar({
-      hiddenDays: [0, 6],
-      defaultView: 'agendaWeek',
-
-      events: [
-        <?php
-        $resultado = CitasC::VerCitasC();
-        foreach ($resultado as $key => $value) {
-          if ($value["id_doctor"] == substr($_GET["url"], 7)) {
-            echo '{
-            id: "' . $value["id"] . '",
-            title: "' . $value["nyaP"] . '",
-            start: "' . $value["inicio"] . '",
-            end: "' . $value["fin"] . '"
-        },';
-          } else if ($value["id_doctor"] == substr($_GET["url"], 6)) {
-            echo '{
-            id: "' . $value["id"] . '",
-            title: "' . $value["nyaP"] . '",
-            start: "' . $value["inicio"] . '",
-            end: "' . $value["fin"] . '"
-        },';
-          }
-        }
-
-        ?>
-      ],
-
-      <?php
-      if ($_SESSION["rol"] == "Paciente") {
-        $columna = "id";
-        $valor = substr($_GET["url"], 7);
-
-        $resultado = DoctoresC::DoctorC($columna, $valor);
-
-        echo 'scrollTime: "' . $resultado["horarioE"] . '",
-                          minTime: "' . $resultado["horarioE"] . '",
-                          maxTime: "' . $resultado["horarioS"] . '",';
-      } else if ($_SESSION["rol"] == "Doctor") {
-        $columna = "id";
-        $valor = substr($_GET["url"], 6);
-
-        $resultado = DoctoresC::DoctorC($columna, $valor);
-
-        echo 'scrollTime: "' . $resultado["horarioE"] . '",
-                          minTime: "' . $resultado["horarioE"] . '",
-                          maxTime: "' . $resultado["horarioS"] . '",';  
-      }
-
-
-      ?>
-
-
-      dayClick: function(date, jsEvent, view) {
-        $('#CitaModal').modal();
-        var fecha = date.format();
-        var hora2 = ("1:00:00").split(":");
-
-        fecha = fecha.split("T");
-        var dia = fecha[0];
-        var hora = fecha[1].split(":");
-        var h1 = parseFloat(hora[0]);
-        var h2 = parseFloat(hora2[0]);
-        var horaFinal = h1 + h2;
-
-        $('#fechaC').val(dia);
-        $('#horaC').val(h1 + ":00:00");
-        $('#fyhIC').val(fecha[0] + " " + h1 + ":00:00");
-        $('#fyhFC').val(fecha[0] + " " + horaFinal + ":00:00");
-      }
-    });
-  </script>
 
 </body>
 

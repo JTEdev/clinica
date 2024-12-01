@@ -27,7 +27,7 @@ class CitasC
 		}
 	}
 
-
+ 
 
 
 	//Mostrar Citas
@@ -42,26 +42,91 @@ class CitasC
 	}
 
 
-	//Pedir cita como doctor
+
+
+	// Mostrar días y horas disponibles para un doctor
+	public static function VerDisponibilidadC($idDoctor)
+	{
+		$tablaBD = "citas";
+		$tablaDoctor = "doctores";
+
+		// Obtener días ocupados del doctor
+		$ocupados = CitasM::ObtenerCitasDoctorM($tablaBD, $idDoctor);
+
+		// Obtener horario del doctor
+		$horario = CitasM::ObtenerHorarioDoctorM($tablaDoctor, $idDoctor);
+
+		return ["ocupados" => $ocupados, "horario" => $horario];
+	}
+
+
+	public static function VerTodosLosHorariosOcupados()
+	{
+		$tabla = "citas";
+		$respuesta = CitasM::ObtenerTodosLosHorariosOcupados($tabla);
+
+		// Aquí agregamos un filtro para separar las citas por paciente, doctor, y fecha.
+		$horariosOcupados = [];
+		foreach ($respuesta as $cita) {
+			$horariosOcupados[] = [
+				"inicio" => $cita["inicio"],
+				"id_paciente" => $cita["id_paciente"] // Guardar el paciente que ocupa ese horario
+			];
+		}
+
+		return $horariosOcupados;
+	}
+
+
+
+
+	public function EliminarCitaC() {
+        if (isset($_GET["idCita"])) {
+            $tablaBD = "citas"; // Tabla de citas
+
+            // Obtener el ID de la cita desde la URL
+            $id = $_GET["idCita"];
+
+            // Llamar al modelo para eliminar la cita
+            $resultado = CitasM::EliminarCitaM($tablaBD, $id);
+
+            // Verificar si la eliminación fue exitosa
+            if ($resultado == true) {
+                echo '<script>
+                    alert("Cita eliminada correctamente.");
+                    window.location = "historial/" . $_SESSION["id"];
+                </script>';
+            }
+        }
+	}	
+
+
+ 
+	
+
+
+	// Programar cita desde la perspectiva del doctor
 	public function PedirCitaDoctorC()
 	{
-
 		if (isset($_POST["Did"])) {
-
 			$tablaBD = "citas";
 
-			$Did = substr($_GET["url"], 6);
-
-			$datosC = array("Did" => $_POST["Did"], "Cid" => $_POST["Cid"], "nombreP" => $_POST["nombreP"], "documentoP" => $_POST["documentoP"], "fyhIC" => $_POST["fyhIC"], "fyhFC" => $_POST["fyhFC"]);
+			$datosC = [
+				"Did" => $_POST["Did"],
+				"Cid" => $_POST["Cid"],
+				"Pid" => $_POST["Pid"],
+				"nombreP" => $_POST["nombreP"],
+				"documentoP" => $_POST["documentoP"],
+				"fyhIC" => $_POST["fyhIC"],
+				"fyhFC" => $_POST["fyhFC"]
+			];
 
 			$resultado = CitasM::PedirCitaDoctorM($tablaBD, $datosC);
 
 			if ($resultado == true) {
-
 				echo '<script>
-
-				window.location = "Citas/"' . $Did . ';
-				</script>';
+                window.location = "Citas/" . $_POST["Did"];
+                </script>';
 			}
 		}
 	}

@@ -1,13 +1,15 @@
 <?php
+require_once "Controladores/citasC.php";
+require_once "Modelos/citasM.php";
 
 if ($_SESSION["id"] != substr($_GET["url"], 10)) {
 
-	echo '<script>
+    echo '<script>
 
 	window.location = "inicio";
 	</script>';
 
-	return;
+    return;
 }
 
 
@@ -15,76 +17,88 @@ if ($_SESSION["id"] != substr($_GET["url"], 10)) {
 
 <div class="content-wrapper">
 
-	<section class="content-header">
+    <section class="content-header">
 
-		<h1>Su Historial de Citas Médicas</h1>
+        <h1>Su Historial de Citas Médicas</h1>
 
-	</section>
+    </section>
 
-	<section class="content" style="font-size: 18px;">
+    <section class="content">
 
-		<div class="box">
+        <div class="box">
 
-			<div class="box-body">
+            <div class="box-body">
 
-				<table class="table table-bordered table-hover table-striped DT">
+                <table class="table table-bordered table-hover table-striped DT">
 
-					<thead>
+                    <thead>
 
-						<tr>
+                        <tr>
 
-							<th>Fecha y Hora</th>
-							<th>Doctor</th>
-							<th>Consultorio</th>
+                            <th>Fecha y Hora</th>
+                            <th>Doctor</th>
+                            <th>Consultorio</th>
+                            <th>Acciones</th>
 
-						</tr>
+                        </tr>
 
-					</thead>
+                    </thead>
 
-					<tbody>
+                    <tbody>
 
-						<?php
+                        <?php
 
-						$resultado = CitasC::VerCitasC();
+                        $resultado = CitasC::VerCitasC();
 
-						foreach ($resultado as $key => $value) {
+                        foreach ($resultado as $key => $value) {
 
-							if ($_SESSION["documento"] == $value["documento"]) {
+                            if ($_SESSION["documento"] == $value["documento"]) {
 
-								echo '<tr>
+                                echo '<tr>
 
 									<td>' . $value["inicio"] . '</td>';
 
-								$columna = "id";
-								$valor = $value["id_doctor"];
+                                $columna = "id";
+                                $valor = $value["id_doctor"];
 
-								$doctor = DoctoresC::DoctorC($columna, $valor);
+                                $doctor = DoctoresC::DoctorC($columna, $valor);
 
-								echo '<td>' . $doctor["apellido"] . ' ' . $doctor["nombre"] . '</td>';
-
-
-								$columna = "id";
-								$valor = $value["id_consultorio"];
-
-								$consultorio = ConsultoriosC::VerConsultoriosC($columna, $valor);
-
-								echo '<td>' . $consultorio["nombre"] . '</td>';
-
-								echo '</tr>';
-							}
-						}
-
-						?>
+                                echo '<td>' . $doctor["apellido"] . ' ' . $doctor["nombre"] . '</td>';
 
 
-					</tbody>
+                                $columna = "id";
+                                $valor = $value["id_consultorio"];
 
-				</table>
+                                $consultorio = ConsultoriosC::VerConsultoriosC($columna, $valor);
 
-			</div>
+                                echo '<td>' . $consultorio["nombre"] . '</td>';
 
-		</div>
+                                echo '</tr>';
 
-	</section>
+                                // Botones de edición y eliminación
+                                echo '<td>
+  <a href="http://localhost/clinica/editarCita/' . htmlspecialchars($value["id"]) . '">
+<button class="btn btn-warning">Editar</button>
+</a>
+<a href="http://localhost/clinica/historial/' . $_SESSION["id"] . '?idCita=' . htmlspecialchars($value["id"]) . '">
+<button class="btn btn-danger">Eliminar</button>
+                  </a>
+</td>
+</tr>';
+                            }
+                        }
+
+                        ?>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
