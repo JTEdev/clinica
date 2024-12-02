@@ -29,6 +29,8 @@ class CitasC
 
  
 
+	
+
 
 	//Mostrar Citas
 	public static function VerCitasC()
@@ -78,30 +80,25 @@ class CitasC
 	}
 
 
+	public static function EliminarCitaC($idCita) {
+		$tabla = "citas";
+		return CitasM::EliminarCitaM($tabla, $idCita);
+	}
 
+	
+		public static function ObtenerCitaPorId($id) {
+		   $tabla = "citas";
+		   return CitasM::ObtenerCitaPorId($tabla, $id);
+		}
+	 
+		public static function ActualizarFechaCita($id, $nuevaFecha) {
+		   $tabla = "citas";
+		   $datos = ["id" => $id, "inicio" => $nuevaFecha];
+		   return CitasM::ActualizarCita($tabla, $datos);
+		}
+	 
+	 
 
-	public function EliminarCitaC() {
-        if (isset($_GET["idCita"])) {
-            $tablaBD = "citas"; // Tabla de citas
-
-            // Obtener el ID de la cita desde la URL
-            $id = $_GET["idCita"];
-
-            // Llamar al modelo para eliminar la cita
-            $resultado = CitasM::EliminarCitaM($tablaBD, $id);
-
-            // Verificar si la eliminación fue exitosa
-            if ($resultado == true) {
-                echo '<script>
-                    alert("Cita eliminada correctamente.");
-                    window.location = "historial/" . $_SESSION["id"];
-                </script>';
-            }
-        }
-	}	
-
-
- 
 	
 
 

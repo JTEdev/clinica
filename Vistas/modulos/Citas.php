@@ -12,6 +12,8 @@
         $valor = $resultado["id_consultorio"];
         $consultorio = ConsultoriosC::VerConsultoriosC($columna, $valor);
         echo '<h1>Consultorio de: ' . $consultorio["nombre"] . '</h1>';
+
+        date_default_timezone_set('America/Lima');
         ?>
     </section>
 
@@ -89,7 +91,6 @@
                                 <h2>Fecha de Fin:</h2>
                                 <input type="text" id="fechaFinInput" class="form-control input-lg" name="fyhFC" readonly>
                             </div>
-
                             <script>
                                 const citasOcupadas = <?php echo json_encode(CitasC::VerTodosLosHorariosOcupados()); ?>;
                                 const diasOcupadosDoctor = <?php echo json_encode(array_column(CitasC::VerDisponibilidadC($resultado["id"])["ocupados"], "inicio")); ?>;
@@ -101,6 +102,20 @@
                                 const horaSelect = document.getElementById("horaSelect");
                                 const fechaFinInput = document.getElementById("fechaFinInput");
 
+                                // Obtener la hora actual en Perú (UTC-5)
+                                function getHoraActualPeru() {
+                                    const ahoraUTC = new Date();
+                                    const ahoraPeru = new Date(ahoraUTC.setHours(ahoraUTC.getHours() + 0)); // Ajustar UTC-5
+                                    return ahoraPeru;
+                                }
+
+                                // Validar si la fecha es válida (día actual o futuro)
+                                function esDiaValido(fecha) {
+                                    const hoy = getHoraActualPeru();
+                                    const fechaSeleccionada = new Date(`${fecha}T00:00:00`);
+                                    return fechaSeleccionada >= new Date(hoy.setHours(0, 0, 0, 0)); // Comparar días
+                                }
+
                                 fechaInput.addEventListener("change", function() {
                                     const pacienteId = document.getElementById("pidInput").value;
 
@@ -111,6 +126,13 @@
                                     }
 
                                     const fecha = this.value;
+
+                                    if (!esDiaValido(fecha)) {
+                                        alert("Día inválido. Por favor selecciona un día válido.");
+                                        this.value = '';
+                                        return;
+                                    }
+
                                     horaSelect.innerHTML = "<option value=''>Seleccione una hora...</option>";
 
                                     const inicio = new Date(`1970-01-01T${horarioE}`);
@@ -124,6 +146,13 @@
                                         const fechaHoraStr = `${fecha} ${horaStr}:00`;
 
                                         const option = document.createElement("option");
+
+                                        // Validar si el horario es del pasado en el día actual
+                                        const fechaHoraCompleta = new Date(`${fecha}T${horaStr}:00`);
+                                        const ahoraPeru = getHoraActualPeru();
+                                        if (fecha === ahoraPeru.toISOString().split("T")[0] && fechaHoraCompleta < ahoraPeru) {
+                                            continue; // Omitir horarios pasados
+                                        }
 
                                         if (diasOcupadosDoctor.includes(fechaHoraStr)) {
                                             option.textContent = "Reservado";
@@ -155,7 +184,6 @@
                                     }
                                 });
 
-
                                 horaSelect.addEventListener("change", function() {
                                     const horaInicio = this.value;
                                     if (horaInicio) {
@@ -174,6 +202,7 @@
                                     }
                                 });
                             </script>
+
 
                         </div>
                     </div>

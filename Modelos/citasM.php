@@ -71,37 +71,47 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devolver como un array asociativo
         }
 
-         // Método para eliminar una cita
-    static public function EliminarCitaM($tablaBD, $id) {
-        // Establecer la conexión a la base de datos
-        $pdo = ConexionBD::cBD()->prepare("DELETE FROM $tablaBD WHERE id = :id");
+        public static function EliminarCitaM($tabla, $idCita) {
+            $stmt = ConexionBD::cBD()->prepare("DELETE FROM $tabla WHERE id = :id");
+            $stmt->bindParam(":id", $idCita, PDO::PARAM_INT);
+    
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+    
+            $stmt = null; // Cerrar conexión
+      }
 
-        // Vincular el parámetro id
-        $pdo->bindParam(":id", $id, PDO::PARAM_INT);
-
-        // Ejecutar la consulta
-        if ($pdo->execute()) {
-            return true;
+        
+      public static function ObtenerCitaPorId($tabla, $id) {
+        $stmt = ConexionBD::cBD()->prepare("SELECT * FROM $tabla WHERE id = :id");
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch();
+     }
+  
+     public static function ActualizarCita($tabla, $datos) {
+        $stmt = ConexionBD::cBD()->prepare("UPDATE $tabla SET inicio = :inicio WHERE id = :id");
+        $stmt->bindParam(":inicio", $datos["inicio"], PDO::PARAM_STR);
+        $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+  
+        if ($stmt->execute()) {
+           return true;
+        } else {
+           return false;
         }
-
-        // Si no se pudo ejecutar la consulta, devolver false
-        return false;
-    }
-
-    static public function VerCitasC($documento) {
-        try {
-            $pdo = ConexionBD::cBD()->prepare("SELECT * FROM citas WHERE documento = :documento");
-            $pdo->bindParam(":documento", $documento, PDO::PARAM_STR);
-            $pdo->execute();
-            return $pdo->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            // Manejo de errores
-            error_log("Error al obtener citas: " . $e->getMessage());
-            return [];
-        }
+     }
+     public static function IncrementarEdicionesCita($idCita) {
+        $tabla = "citas";
+        $sql = "UPDATE $tabla SET inicio = inicio + 1 WHERE id = :id";
+        $stmt = ConexionBD::cBD()->prepare($sql);
+        $stmt->bindParam(":id", $idCita, PDO::PARAM_INT);
+    
+        return $stmt->execute();
     }
     
-
       
         // Guardar nueva cita
         static public function PedirCitaDoctorM($tablaBD, $datosC)

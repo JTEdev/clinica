@@ -4,7 +4,7 @@ require_once "Controladores/plantillaC.php";
 
 require_once "Controladores/secretariasC.php";
 require_once "Modelos/secretariasM.php";
-// Incluir el controlador
+
 
 
 require_once "Controladores/consultoriosC.php";

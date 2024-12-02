@@ -5,7 +5,11 @@ if ($_SESSION["rol"] != "Paciente") {
     </script>';
     return;
 }
+
+date_default_timezone_set('America/Lima');
 ?>
+
+
 
 <div class="content-wrapper">
 
@@ -130,7 +134,7 @@ const fechaFinInput = document.getElementById("fechaFinInput");
 // Obtener la hora actual en Perú (UTC-5)
 function getHoraActualPeru() {
     const ahoraUTC = new Date();
-    const ahoraPeru = new Date(ahoraUTC.setHours(ahoraUTC.getHours() - 5)); // Ajustar UTC-5
+    const ahoraPeru = new Date(ahoraUTC.setHours(ahoraUTC.getHours() +0 )); // Ajustar UTC-5
     return ahoraPeru;
 }
 
