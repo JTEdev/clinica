@@ -196,7 +196,7 @@ class PacientesC{
 
 				if($resultado["foto"] == ""){
 
-					echo '<td><img src="Vistas/img/defecto.png" width="40px"></td>';
+					echo '<td><img src="Vistas/img/usuario.png" width="40px"></td>';
 
 				}else{
 
@@ -267,7 +267,7 @@ class PacientesC{
 
 							}else {
 
-								echo '<img src="http://localhost/clinica/Vistas/img/defecto.png" width="200px" class="img-responsive">';
+								echo '<img src="http://localhost/clinica/Vistas/img/usuario.png" width="200px" class="img-responsive">';
 
 							}
 

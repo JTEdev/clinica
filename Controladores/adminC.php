@@ -62,10 +62,10 @@ class AdminC
 
         if ($resultado["foto"] = ! "") {
 
-            echo '<td><img src="' . $resultado["foto"] . '" class="img-responsive" width="40px"></td>';
+            echo '<td><img src="http://localhost/clinica/Vistas/img/usuario.png"' . $resultado["foto"] . '" class="img-responsive" width="40px"></td>';
         } else {
 
-            echo '<td><img src="http://localhost/clinica/Vistas/img/defecto.png" class="img-responsive" width="40px"></td>';
+            echo '<td><img src="http://localhost/clinica/Vistas/img/usuario.png" class="img-responsive" width="40px"></td>';
         }
 
         echo '<td>
@@ -119,7 +119,7 @@ class AdminC
 
         if ($resultado["foto"] == "") {
 
-            echo '<img src="http://localhost/clinica/Vistas/img/defecto.png" width="200px;">';
+            echo '<img src="http://localhost/clinica/Vistas/img/usuario.png" width="200px;">';
         } else {
 
             echo '<img src="http://localhost/clinica/' . $resultado["foto"] . '" width="200px;">';

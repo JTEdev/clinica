@@ -205,7 +205,7 @@ class DoctoresC
 
 		if ($resultado["foto"] == "") {
 
-			echo '<td><img src="Vistas/img/defecto.png" width="40px"></td>';
+			echo '<td><img src="Vistas/img/usuario.png" width="40px"></td>';
 		} else {
 
 			echo '<td><img src="' . $resultado["foto"] . '" width="40px"></td>';
@@ -310,7 +310,7 @@ class DoctoresC
 
 		if ($resultado["foto"] == "") {
 
-			echo '<img src="http://localhost/clinica/Vistas/img/defecto.png" class="img-responsive" width="200px">';
+			echo '<img src="http://localhost/clinica/Vistas/img/usuario.png" class="img-responsive" width="200px">';
 		} else {
 
 			echo '<img src="http://localhost/clinica/' . $resultado["foto"] . '" class="img-responsive" width="200px">';
