@@ -14,7 +14,7 @@ class InicioC
 
         echo '<div class="box-body">
          
-	          <div class="col-md-6 bg-primary" style="margin-top: 5%">
+	          <div class="col-md-6 bg-primary" style="margin-top: 5%;border-radius:25px ;">
 	            
 	            <h1>Bienvenidos</h1>
 

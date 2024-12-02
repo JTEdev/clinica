@@ -19,13 +19,13 @@ if($_SESSION["rol"] != "Paciente"){
 
     <section class="content">
 
-        <div class="box">
+        <div class="box" >
 
             <div class="box-body">
 
                 <?php
 
-                $columna = null;
+                $columna = null;    
                 $valor = null;
 
                 $resultado = ConsultoriosC::VerConsultoriosC($columna, $valor);
@@ -33,7 +33,7 @@ if($_SESSION["rol"] != "Paciente"){
                 foreach ($resultado as $key => $value) {
                     echo '<div class="col-lg-3 col-xs-6">
                             <!-- small box -->
-                            <div class="small-box bg-aqua">
+                            <div class="small-box bg-aqua" style="border-radius:25px ;">
                                 <div class="inner">
                                     <h3>'.$value["nombre"].'</h3>';
                                     $columna = "id_consultorio";

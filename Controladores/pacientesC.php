@@ -113,7 +113,7 @@ class PacientesC{
 				// Verificar si se encontró un usuario y si la contraseña es correcta
 				if ($resultado && password_verify($_POST["clave-Ing"], $resultado["clave"])) {
 					// Iniciar sesión
-					session_start();
+					//	session_start();
 					$_SESSION["Ingresar"] = true;
 	
 					$_SESSION["id"] = $resultado["id"];
