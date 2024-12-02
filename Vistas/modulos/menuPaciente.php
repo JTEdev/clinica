@@ -27,6 +27,13 @@
           </a>
         </li>
 
+        <li>
+          <a href="http://localhost/clinica/pagar-cita">
+            <i class="fa fa-calendar-check-o"></i>
+            <span>Pagar Cita</span>
+          </a>
+        </li>
+
       </ul>
 
     </section>

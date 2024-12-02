@@ -238,7 +238,7 @@ public function IngresarSecretariaC() {
 
 			$resultado = SecretariasM::ActualizarPerfilSecretariaM($tablaBD, $datosC);
 
-			if ($resultado == true) {
+			if ($resultado == true) {	
 
 				echo '<script>
 
