@@ -1,4 +1,11 @@
 <?php
+
+// Iniciar sesión solo si no está ya activa
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Verificar que el usuario es paciente
 if ($_SESSION["rol"] != "Paciente") {
     echo '<script>
     window.location = "inicio";
@@ -7,12 +14,39 @@ if ($_SESSION["rol"] != "Paciente") {
 }
 
 date_default_timezone_set('America/Lima');
+// Cargar el autoloader de Composer y configurar el token de acceso de MercadoPago
+require __DIR__ . '/vendor/autoload.php';
+MercadoPago\SDK::setAccessToken("TEST-4737373440007846-120116-f57d6c94b2ad7aa75ef122997ac882d8-1109246217");
+
+// Crear una preferencia de pago de MercadoPago
+$preference = new MercadoPago\Preference();
+
+$item = new MercadoPago\Item();
+$item->id = "CT-001";  // ID del producto (puede ser cualquier identificador único)
+$item->title = "Cita Médica";  // Nombre del producto (en este caso una cita médica)
+$item->quantity = 1;    // Cantidad de productos
+$item->unit_price = 29.99; // Precio del producto
+
+$preference->items = [$item];
+$preference->statement_descriptor = "Clinica Maria Auxiliadora";  // Descripción que aparecerá en el estado de cuenta del comprador
+$preference->external_reference = "CTD001";  // Referencia externa, útil para rastrear el pago
+
+// Definir las URLs de redirección
+$preference->back_urls = [
+    "success" => "http://localhost/clinica/inicio/",  // Página de éxito después de un pago exitoso
+    "failure" => "https://www.tu-sitio.com/failure.php",  // Página de fallo si el pago no fue exitoso
+    "pending" => "https://www.tu-sitio.com/pending.php"   // Página de pendiente si el pago queda en espera
+];
+
+$preference->auto_return = "approved"; // Redirige automáticamente al éxito si el pago es aprobado
+
+// Guardar la preferencia
+$preference->save();
+
+// Aquí empieza el HTML y el formulario
 ?>
 
-
-
 <div class="content-wrapper">
-
     <section class="content-header">
 
         <?php
@@ -100,15 +134,23 @@ date_default_timezone_set('America/Lima');
 
                         </div>
 
+                        <!-- Botón de MercadoPago -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Pedir Cita</button>
-                            <button type="button" class="btn btn-danger">Cancelar</button>
+                            <div id="wallet_container"></div> <!-- Contenedor para el botón de pago de MercadoPago -->
                         </div>
 
-                        <?php
+                    </div>
+
+                    
+                    <?php
                         $enviarC = new CitasC();
                         $enviarC->EnviarCitaC();
-                        ?>
+                    ?>
+
+               
+                     
+                
+
                 </form>
 
             </div>
@@ -118,6 +160,58 @@ date_default_timezone_set('America/Lima');
     </section>
 
 </div>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+    // Inicializar MercadoPago SDK
+    const mp = new MercadoPago('TEST-70493c00-15e4-4568-aa44-401f0ee7214e', {
+        locale: 'es-PE' // Establecer la región de Perú
+    });
+
+    // Crear el botón de pago en el contenedor
+mp.bricks().create("wallet", "wallet_container", {
+    initialization: {
+        preferenceId: '<?php echo $preference->id; ?>', // ID de la preferencia desde PHP
+    },
+    customization: {
+        texts: {
+            action: 'Pagar Cita' // Texto del botón
+        },
+        styles: {
+            background: '#28a745',
+            borderRadius: '10px',
+            color: '#ffffff',
+            fontSize: '18px',
+        }
+    },
+    callbacks: {
+        onReady: () => {
+            console.log("Botón de MercadoPago listo.");
+        },
+        onError: (error) => {
+            console.error("Error al inicializar MercadoPago:", error);
+        },
+        onSubmit: () => {
+            console.log("Se ha hecho clic en pagar.");
+            // No realizar ninguna acción adicional que recargue la página
+        }
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 const citasOcupadas = <?php echo json_encode(CitasC::VerTodosLosHorariosOcupados()); ?>;
